@@ -1,0 +1,24 @@
+{
+  "name": "fordatetime",
+  "version": "1.0.2",
+  "description": "DateTime utils.",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --mode production --config=webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/z41z/fordatetime.git"
+  },
+  "keywords": [
+    "datetime",
+    "format",
+    "fordatetime"
+  ],
+  "author": "z41z",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/z41z/fordatetime/issues"
+  },
+  "homepage": "https://github.com/z41z/fordatetime#readme"
+}
