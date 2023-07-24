@@ -1,6 +1,6 @@
 {
   "name": "fordatetime",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "DateTime utils.",
   "main": "index.js",
   "scripts": {
