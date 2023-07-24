@@ -106,8 +106,8 @@ module.exports = class {
         return new Date(this.setFullYear(currentYear + year))
       }
       let results = []
-      for (let i = 0 + +!includeCurrent; i < year + !+includeCurrent; i++) {
-        results.push(new Date(new Date().setFullYear(currentYear + i - +!includeCurrent)))
+      for (let i = 0 + +!includeCurrent; i < year + +!includeCurrent; i++) {
+        results.push(new Date(new Date().setFullYear(currentYear + i)))
       }
       return results
     }
