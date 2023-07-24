@@ -25,10 +25,10 @@ module.exports = class {
       }
       let results = []
       for (let i = +!includeCurrent; i <= day - +includeCurrent; i++) {
-        results.push(new Date(+this - i * 1e3 * 60 * 60 * 24))
-        // day is 1 push prev 1 day
+        results.unshift(new Date(+this - i * 1e3 * 60 * 60 * 24))
+        // day is 1 unshift prev 1 day
         if (day === 1) {
-          results.push(new Date(+this - 1 * 1e3 * 60 * 60 * 24))
+          results.unshift(new Date(+this - 1 * 1e3 * 60 * 60 * 24))
         }
       }
       return results
@@ -43,7 +43,7 @@ module.exports = class {
       }
       let results = []
       for (let i = 1; i <= month; i++) {
-        results.push(new Date(new Date().setMonth(currentMonth - i - +!includeCurrent)))
+        results.unshift(new Date(new Date().setMonth(currentMonth - i - +!includeCurrent)))
       }
       return results
     }
@@ -57,7 +57,7 @@ module.exports = class {
       }
       let results = []
       for (let i = 0; i < year; i++) {
-        results.push(new Date(new Date().setFullYear(currentYear - i - +!includeCurrent)))
+        results.unshift(new Date(new Date().setFullYear(currentYear - i - +!includeCurrent)))
       }
       return results
     }
