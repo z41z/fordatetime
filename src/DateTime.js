@@ -1,6 +1,7 @@
 module.exports = class {
   constructor() {
     this.format()
+    this.getDays()
     this.prev()
     this.prevDay()
     this.prevMonth()
@@ -10,18 +11,21 @@ module.exports = class {
     this.nextMonth()
     this.nextYear()
     this.getWeek()
+    this.getRangeYear()
+    this.getRangeMonth()
+    this.getRangeWeek()
     return this
   }
   prev() {
     Date.prototype.prev = function(timestamp) {
-      return new Date(+this - timestamp)
+      return new Date(+this - timestamp).format('yyyy-MM-dd hh:mm:ss')
     }
   }
   prevDay() {
     Date.prototype.prevDay = function(options = { day: 1, isShowAll: false, includeCurrent: false }) {
       let { day = 1, isShowAll = false, includeCurrent = false } = options
       if ((!isShowAll) && !includeCurrent) {
-        return new Date(+this - day * 1e3 * 60 * 60 * 24)
+        return new Date(+this - day * 1e3 * 60 * 60 * 24).format('yyyy-MM-dd hh:mm:ss')
       }
       let results = []
       for (let i = +!includeCurrent; i <= day - +includeCurrent; i++) {
@@ -31,21 +35,28 @@ module.exports = class {
           results.unshift(new Date(+this - 1 * 1e3 * 60 * 60 * 24))
         }
       }
-      return results
+      return results.map(item => item.format('yyyy-MM-dd hh:mm:ss'))
     }
   }
   prevMonth() {
     Date.prototype.prevMonth = function(options = { month: 1, isShowAll: false, includeCurrent: false }) {
       let { month = 1, isShowAll = false, includeCurrent = false } = options
       let currentMonth = this.getMonth() + 1
+      let days = this.getDays()
+      let tmpDate = new Date(this.format('yyyy-MM-01 hh:mm:ss'))
+      tmpDate.setMonth(tmpDate.getMonth() - month)
+      let tmpDateDays = tmpDate.getDays()
       if ((!isShowAll) && !includeCurrent) {
-        return new Date(this.setMonth(currentMonth - month - 1))
+        return new Date(tmpDate.format(`yyyy-MM-${days > tmpDateDays ? tmpDateDays : days} ${this.format(' hh:mm:ss')}`)).format('yyyy-MM-dd hh:mm:ss')
       }
       let results = []
       for (let i = 1; i <= month; i++) {
-        results.unshift(new Date(new Date().setMonth(currentMonth - i - +!includeCurrent)))
+        tmpDate.setMonth(currentMonth - i - +!includeCurrent)
+        tmpDateDays = tmpDate.getDays()
+        let date = new Date(tmpDate.format(`yyyy-MM-${days > tmpDateDays ? tmpDateDays : days} ${this.format(' hh:mm:ss')}`))
+        results.unshift(date)
       }
-      return results
+      return results.map(item => item.format('yyyy-MM-dd hh:mm:ss'))
     }
   }
   prevYear() {
@@ -53,25 +64,25 @@ module.exports = class {
       let { year = 1, isShowAll = false, includeCurrent = false } = options
       let currentYear = this.getFullYear()
       if ((!isShowAll) && !includeCurrent) {
-        return new Date(this.setFullYear(currentYear - year))
+        return new Date(this.setFullYear(currentYear - year)).format('yyyy-MM-dd hh:mm:ss')
       }
       let results = []
       for (let i = 0; i < year; i++) {
-        results.unshift(new Date(new Date().setFullYear(currentYear - i - +!includeCurrent)))
+        results.unshift(new Date(this.setFullYear(currentYear - i - +!includeCurrent)))
       }
-      return results
+      return results.map(item => item.format('yyyy-MM-dd hh:mm:ss'))
     }
   }
   next() {
     Date.prototype.next = function(timestamp) {
-      return new Date(+this + timestamp)
+      return new Date(+this + timestamp).format('yyyy-MM-dd hh:mm:ss')
     }
   }
   nextDay() {
     Date.prototype.nextDay = function(options = { day: 1, isShowAll: false, includeCurrent: false }) {
       let { day = 1, isShowAll = false, includeCurrent = false } = options
       if ((!isShowAll) && !includeCurrent) {
-        return new Date(+this + day * 1e3 * 60 * 60 * 24)
+        return new Date(+this + day * 1e3 * 60 * 60 * 24).format('yyyy-MM-dd hh:mm:ss')
       }
       let results = []
       for (let i = +!includeCurrent; i <= day - +includeCurrent; i++) {
@@ -81,21 +92,28 @@ module.exports = class {
           results.push(new Date(+this + 1 * 1e3 * 60 * 60 * 24))
         }
       }
-      return results
+      return results.map(item => item.format('yyyy-MM-dd hh:mm:ss'))
     }
   }
   nextMonth() {
     Date.prototype.nextMonth = function(options = { month: 1, isShowAll: false, includeCurrent: false }) {
       let { month = 1, isShowAll = false, includeCurrent = false } = options
-      let currentMonth = this.getMonth() + 1
+      let days = this.getDays()
       if ((!isShowAll) && !includeCurrent) {
-        return new Date(this.setMonth(currentMonth + month - 1))
+        let tmpDate = new Date(this.format('yyyy-MM-01 hh:mm:ss'))
+        tmpDate.setMonth(tmpDate.getMonth() + month)
+        let tmpDateDays = tmpDate.getDays()
+        return new Date(tmpDate.format(`yyyy-MM-${days > tmpDateDays ? tmpDateDays : days} ${this.format(' hh:mm:ss')}`)).format('yyyy-MM-dd hh:mm:ss')
       }
       let results = []
-      for (let i = 0; i < month; i++) {
-        results.push(new Date(new Date().setMonth(currentMonth + i - +includeCurrent)))
+      for (let i = 1; i <= month; i++) {
+        let tmpDate = new Date(this.format('yyyy-MM-01 hh:mm:ss'))
+        tmpDate.setMonth(tmpDate.getMonth() + i - +includeCurrent)
+        let tmpDateDays = tmpDate.getDays()
+        let date = new Date(tmpDate.format(`yyyy-MM-${days > tmpDateDays ? tmpDateDays : days} ${this.format(' hh:mm:ss')}`))
+        results.push(date)
       }
-      return results
+      return results.map(item => item.format('yyyy-MM-dd hh:mm:ss'))
     }
   }
   nextYear() {
@@ -103,13 +121,13 @@ module.exports = class {
       let { year = 1, isShowAll = false, includeCurrent = false } = options
       let currentYear = this.getFullYear()
       if ((!isShowAll) && !includeCurrent) {
-        return new Date(this.setFullYear(currentYear + year))
+        return new Date(this.setFullYear(currentYear + year)).format('yyyy-MM-dd hh:mm:ss')
       }
       let results = []
       for (let i = 0 + +!includeCurrent; i < year + +!includeCurrent; i++) {
-        results.push(new Date(new Date().setFullYear(currentYear + i)))
+        results.push(new Date(this.setFullYear(currentYear + i)))
       }
-      return results
+      return results.map(item => item.format('yyyy-MM-dd hh:mm:ss'))
     }
   }
   split(options = {}) {
@@ -119,7 +137,7 @@ module.exports = class {
     for (let i = 0; i <= n; i++) {
       results.push(new Date(+startTime + gap * i))
     }
-    return results
+    return results.map(item => item.format('yyyy-MM-dd hh:mm:ss'))
   }
   format() {
     Date.prototype.format = function(fmt) {
@@ -174,6 +192,39 @@ module.exports = class {
   getWeek() {
     Date.prototype.getWeek = function(weeks = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']) {
       return weeks[this.getDay()]
+    }
+  }
+  getRangeYear() {
+    Date.prototype.getRangeYear = function() {
+      let year = this.getFullYear()
+      return {
+        start: `${year}-01-01 00:00:00`,
+        end: `${year}-12-31 23:59:59`
+      }
+    }
+  }
+  getRangeMonth() {
+    Date.prototype.getRangeMonth = function() {
+      let startTime = this.format('yyyy-MM-01 00:00:00')
+      let days = new Date(+new Date(this.format(`yyyy-${this.getMonth() + 2}-01 00:00:00`)) - 1).getDate()
+      return {
+        start: startTime,
+        end: new Date(startTime).format(`yyyy-MM-${days} 23:59:59`)
+      }
+    }
+  }
+  getRangeWeek() {
+    Date.prototype.getRangeWeek = function() {
+      let day = this.getDay()
+      return {
+        start: new Date(+this - (day - 1) * 3600 * 1e3 * 24).format('yyyy-MM-dd 00:00:00'),
+        end: new Date(+this + ((7 - day) * 3600 * 1e3 * 24)).format('yyyy-MM-dd 23:59:59')
+      }
+    }
+  }
+  getDays() {
+    Date.prototype.getDays = function() {
+      return new Date(+new Date(this.format(`yyyy-${this.getMonth() + 2}-01 00:00:00`)) - 1).getDate()
     }
   }
 }
